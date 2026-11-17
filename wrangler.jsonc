@@ -1,6 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "classhub",
-  "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-11-17"
+  "compatibility_date": "2026-11-17",
+  "assets": {
+    "directory": "./dist"
+  }
 }
