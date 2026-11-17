@@ -28,6 +28,10 @@ Se hai già applicato le migration precedenti ma la home mostra `PGRST205` per
 È ripetibile e crea anche gli eventi se mancanti. La pagina **Amministrazione**
 contiene il catalogo dei permessi assegnabili; gli amministratori possono
 inoltre aggiungere e modificare box, testi e link mostrati nella home.
+I permessi disponibili includono creazione e cancellazione di lezioni/eventi
+(propri o di tutti gli utenti) e gestione dei contenuti condivisi della
+dashboard. Gli utenti con `lessons.delete_own` possono eliminare le proprie
+lezioni direttamente dalla scheda.
 
 ## Cloudflare Pages
 

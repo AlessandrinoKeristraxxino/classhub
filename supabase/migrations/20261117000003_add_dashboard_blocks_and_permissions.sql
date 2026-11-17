@@ -14,6 +14,7 @@ create index if not exists events_owner_starts_at_idx
 alter table public.events enable row level security;
 revoke all on table public.events from anon;
 grant select, insert, delete on table public.events to authenticated;
+grant delete on table public.lessons to authenticated;
 
 drop policy if exists "Users can read their own events" on public.events;
 create policy "Users can read their own events"
