@@ -7,7 +7,8 @@ Markdown e allegati.
 
 1. Crea un progetto Supabase e applica, in ordine, tutte le migration in
    [`supabase/migrations`](./supabase/migrations). Creano le lezioni, i profili,
-   gli avatar, ruoli e permessi, oltre alle policy RLS.
+   gli avatar, eventi, i blocchi della dashboard, ruoli e permessi, oltre alle
+   policy RLS.
 2. Copia `.env.example` in `.env` e inserisci URL del progetto e chiave anonima
    (o publishable key). Non inserire mai una chiave `service_role` nel client.
 3. Riavvia il server Vite dopo aver configurato le variabili.
@@ -21,9 +22,12 @@ allegato è 10 MB e per avatar 2 MB. Ogni account riceve il ruolo predefinito
 **Studente**; solo `alessandro.luigi.napoli@gmail.com` può aprire
 **Amministrazione** e gestire ruoli, permessi e assegnazioni.
 
-Per attivare gli eventi della dashboard, esegui
-[`supabase/migrations/20261117000002_add_dashboard_events.sql`](./supabase/migrations/20261117000002_add_dashboard_events.sql)
-dal SQL Editor Supabase.
+Se hai già applicato le migration precedenti ma la home mostra `PGRST205` per
+`public.events`, esegui dal SQL Editor l'intera migration più recente
+[`20261117000003_add_dashboard_blocks_and_permissions.sql`](./supabase/migrations/20261117000003_add_dashboard_blocks_and_permissions.sql).
+È ripetibile e crea anche gli eventi se mancanti. La pagina **Amministrazione**
+contiene il catalogo dei permessi assegnabili; gli amministratori possono
+inoltre aggiungere e modificare box, testi e link mostrati nella home.
 
 ## Cloudflare Pages
 

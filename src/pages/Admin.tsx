@@ -150,11 +150,12 @@ export default function Admin() {
     }
 
     let isMounted = true;
-    void supabase
-      .rpc("has_classhub_permission", {
-        permission_name: "dashboard.manage",
-      })
-      .then(async ({ data, error }) => {
+    void (async () => {
+      try {
+        const { data, error } = await supabase.rpc(
+          "has_classhub_permission",
+          { permission_name: "dashboard.manage" },
+        );
         if (error) {
           throw error;
         }
@@ -168,19 +169,18 @@ export default function Admin() {
             setDashboardBlocks(blocks);
           }
         }
-      })
-      .catch((error: unknown) => {
+      } catch (error) {
         if (isMounted) {
           setPageError(
             getErrorMessage(error, "Impossibile verificare i permessi amministrativi."),
           );
         }
-      })
-      .finally(() => {
+      } finally {
         if (isMounted) {
           setIsLoadingData(false);
         }
-      });
+      }
+    })();
 
     return () => {
       isMounted = false;
