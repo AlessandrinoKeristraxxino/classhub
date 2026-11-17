@@ -1,75 +1,54 @@
-# React + TypeScript + Vite
+# ClassHub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Applicazione React per creare e consultare lezioni private, con descrizioni in
+Markdown e allegati.
 
-Currently, two official plugins are available:
+## Configurazione Supabase
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Crea un progetto Supabase e applica, in ordine, tutte le migration in
+   [`supabase/migrations`](./supabase/migrations). Creano le lezioni, i profili,
+   gli avatar, ruoli e permessi, oltre alle policy RLS.
+2. Copia `.env.example` in `.env` e inserisci URL del progetto e chiave anonima
+   (o publishable key). Non inserire mai una chiave `service_role` nel client.
+3. Riavvia il server Vite dopo aver configurato le variabili.
+4. In Supabase Auth configura le conferme email e gli URL di redirect per gli
+   ambienti che utilizzi.
 
-## React Compiler
+Gli utenti possono registrarsi o accedere dalla pagina **Lezioni**. RLS limita
+le righe e i file al rispettivo proprietario; gli allegati sono privati e
+vengono aperti tramite URL firmati a scadenza. La dimensione massima per
+allegato è 10 MB e per avatar 2 MB. Ogni account riceve il ruolo predefinito
+**Studente**; solo `alessandro.luigi.napoli@gmail.com` può aprire
+**Amministrazione** e gestire ruoli, permessi e assegnazioni.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Per attivare gli eventi della dashboard, esegui
+[`supabase/migrations/20261117000002_add_dashboard_events.sql`](./supabase/migrations/20261117000002_add_dashboard_events.sql)
+dal SQL Editor Supabase.
 
-## Expanding the ESLint configuration
+## Cloudflare Pages
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+La configurazione Wrangler è in [`wrangler.jsonc`](./wrangler.jsonc). Dopo aver
+creato un account Cloudflare:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Esegui `npx wrangler login` e crea il progetto Pages `classhub` dal
+   dashboard Cloudflare.
+2. Configura `VITE_SUPABASE_URL` e
+   `VITE_SUPABASE_PUBLISHABLE_KEY` nelle variabili di build Cloudflare se
+   userai anche le build collegate a Git. Sono chiavi pubbliche destinate al
+   browser: non inserire mai una chiave `service_role`.
+3. Esegui `npm run build`, poi
+   `npx wrangler pages deploy dist --project-name=classhub` per pubblicare `dist`.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+La distribuzione da riga di comando usa le variabili del `.env` locale. Il
+dominio personalizzato e le impostazioni DNS vanno configurati nel dashboard
+Cloudflare dopo aver collegato il dominio.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Sviluppo
 
+```sh
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+La build di produzione e il lint sono disponibili con `npm run build` e
+`npm run lint`.
